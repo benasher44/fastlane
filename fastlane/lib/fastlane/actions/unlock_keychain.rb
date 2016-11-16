@@ -23,31 +23,31 @@ module Fastlane
         escaped_password = params[:password].shellescape
 
         # unlock given keychain and disable lock and timeout
-        commands << Fastlane::Actions.sh("security unlock-keychain -p #{escaped_password} #{escaped_path}", log: false)
-        commands << Fastlane::Actions.sh("security set-keychain-settings #{escaped_path}", log: false)
+        commands << Fastlane::Actions.sh("security unlock-keychain -p #{escaped_password} #{escaped_path}", log: true)
+        commands << Fastlane::Actions.sh("security set-keychain-settings #{escaped_path}", log: true)
         commands
       end
 
       def self.add_keychain_to_search_list(keychain_path)
-        keychains = Fastlane::Actions.sh("security list-keychains -d user", log: false).shellsplit
+        keychains = Fastlane::Actions.sh("security list-keychains -d user", log: true).shellsplit
 
         # add the keychain to the keychain list
         unless keychains.include?(keychain_path)
           keychains << keychain_path
 
-          Fastlane::Actions.sh("security list-keychains -s #{keychains.shelljoin}", log: false)
+          Fastlane::Actions.sh("security list-keychains -s #{keychains.shelljoin}", log: true)
         end
       end
 
       def self.replace_keychain_in_search_list(keychain_path)
-        Actions.lane_context[Actions::SharedValues::ORIGINAL_DEFAULT_KEYCHAIN] = Fastlane::Actions.sh("security default-keychain", log: false).strip
+        Actions.lane_context[Actions::SharedValues::ORIGINAL_DEFAULT_KEYCHAIN] = Fastlane::Actions.sh("security default-keychain", log: true).strip
         escaped_path = keychain_path.shellescape
-        Fastlane::Actions.sh("security list-keychains -s #{escaped_path}", log: false)
+        Fastlane::Actions.sh("security list-keychains -s #{escaped_path}", log: true)
       end
 
       def self.default_keychain(keychain_path)
         escaped_path = keychain_path.shellescape
-        Fastlane::Actions.sh("security default-keychain -s #{escaped_path}", log: false)
+        Fastlane::Actions.sh("security default-keychain -s #{escaped_path}", log: true)
       end
 
       def self.expand_keychain_path(keychain_path)
